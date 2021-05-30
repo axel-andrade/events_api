@@ -7,12 +7,14 @@ import cors from "cors";
 import requestIdMdw from "./middlewares/request-id";
 import routes from "./routes";
 import logger from "@shared/logger";
+import { User } from "@entities";
 
 declare global {
   namespace Express {
     export interface Request {
       id: string;
       container: AwilixContainer;
+      currentUser: Partial<User>;
     }
 
     export interface Response {

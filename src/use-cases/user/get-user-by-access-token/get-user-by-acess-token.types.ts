@@ -1,17 +1,12 @@
 import { User, UserRoleEnum } from "@entities";
 
 export interface GetUserByAccessTokenGateway {
-  findUserAccountByAccessToken(
+  findUserByIdAndRole(
     accessToken: string,
     role?: string
   ): Promise<User>;
   decrypt: (ciphertext: string) => Promise<string>;
 }
-
-export interface GetUserByAccessTokenParams {
-  getUserByAccessTokenGateway: GetUserByAccessTokenGateway;
-}
-
 export interface GetUserByAccessTokenRequestDTO {
   accessToken: string;
   role?: UserRoleEnum;

@@ -1,6 +1,6 @@
 import { User } from "@entities";
 
-export interface UpdatePasswordGateway {
+export interface LoginGateway {
   startTransaction(): void;
   endTransaction(): Promise<void>;
   save(user: User): Promise<void>;
@@ -9,17 +9,17 @@ export interface UpdatePasswordGateway {
   encrypt: (plaintext: string) => Promise<string>;
 }
 
-export interface UpdatePasswordRequestDTO {
-  oldPassword: string;
-  newPassword: string;
-}
-
-export interface UpdatePasswordResponseDTO {
+export interface LoginResponseDTO {
   success: boolean;
   data?: User;
   failures?: Error[];
 }
 
-export interface UpdatePasswordPresenter {
-  show(result: UpdatePasswordResponseDTO): void;
+export interface LoginRequestDTO {
+  password: string;
+  email: string;
+}
+
+export interface LoginPresenter {
+  show(result: LoginResponseDTO): void;
 }

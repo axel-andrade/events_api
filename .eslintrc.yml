@@ -1,0 +1,35 @@
+extends: "eslint:recommended"
+
+env:
+  node: true
+  es2017: true
+  mocha: true
+  jest: true
+
+parser: "@typescript-eslint/parser"
+
+plugins: ["@typescript-eslint/eslint-plugin"]
+
+parserOptions:
+  ecmaVersion: 2019
+  sourceType: module
+
+rules:
+  indent: 0
+  linebreak-style: 0
+  eqeqeq: 2
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
+  no-console:
+    - off
+  no-unused-vars:
+    - off
+  "@typescript-eslint/no-unused-vars":
+    - error
+    - vars: all
+      args: after-used
+      ignoreRestSiblings: false

@@ -1,15 +1,12 @@
 import { Router } from "express";
-import signup from "@infra/http/actions/user/signup";
-import login from "@infra/http/actions/user/login";
+// import signup from "@infra/http/actions/user/signup";
 import { createAction } from "../create-action";
-import { adminAuth } from "../middlewares";
+import { adminAuth, auth } from "../middlewares";
 
 const router = Router();
 
-router.route("/signup").post(signup);
-router.route("/login").post(login);
-router
-  .route("/update-password")
-  .patch(adminAuth,createAction("updatePassword"));
+// router.route("/signup").post(signup);
+router.route("/login").post(createAction("login"));
+router.route("/update-password").patch(auth, createAction("updatePassword"));
 
 export default router;

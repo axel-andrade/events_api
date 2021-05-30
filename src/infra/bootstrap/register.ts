@@ -13,53 +13,77 @@ import path from "path";
 import util from "util";
 import lodash from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import sequelize, { Op } from "sequelize";
+import sequelize, { Op, Transaction } from "sequelize";
 
-import { LoginInteractor } from "@useCases/user/login";
 import logger from "@shared/logger";
+import { DB, getModels } from "@infra/db/models";
+import { SignupBs } from "@useCases/user/signup";
+import GetUserByAccessTokenBs from "@useCases/user/get-user-by-access-token/get-user-by-access-token.bs";
+import UpdatePasswordBs from "@useCases/user/update-password/update-password.bs";
+import {
+  UpdatePasswordGateway,
+  UpdatePasswordPresenter,
+} from "@useCases/user/update-password/update-password.types";
+import { GetUserByAccessTokenGateway } from "@useCases/user/get-user-by-access-token/get-user-by-acess-token.types";
+import { DataMapper } from "src/adapters/common/mappers";
+import { Config } from "@infra/config/config";
+import LoginBs from "@useCases/user/login/login.bs";
+import { LoginGateway, LoginPresenter } from "@useCases/user/login/login.types";
 
 export type Authorization = {
   organization_id: number;
 };
+
 export type GetTransaction = (name: string) => sequelize.Transaction;
 export type SetTransaction = (
   name: string,
   transaction: sequelize.Transaction
 ) => void;
 
+export interface EntityDataMappers {
+  [entity: string]: DataMapper;
+}
+
 export type AppContainer = {
+  config: Config;
   env: string;
   fs: typeof fs;
   util: typeof util;
   uuidv4: typeof uuidv4;
   path: typeof path;
   sequelizeOp: typeof Op;
+  db: DB;
   getTransaction: GetTransaction;
   setTransaction: SetTransaction;
-
-  /* Handlers */
+  transaction: Transaction;
+  mappers: EntityDataMappers;
 
   /* Interactors */
-  paymentsReceiverBs: LoginInteractor;
+  loginBs: LoginBs;
+  signupBs: SignupBs;
+  getUserByAccessTokenInteractor: GetUserByAccessTokenBs;
+  updatePasswordBs: UpdatePasswordBs;
 
   /* Gateways */
+  loginGateway: LoginGateway
+  updatePasswordGateway: UpdatePasswordGateway;
+  getUserByAccessTokenGateway: GetUserByAccessTokenGateway;
 
-  /* Repositories */
+  /* Presentes */
+  loginPresenter: LoginPresenter;
+  updatePasswordPresenter: UpdatePasswordPresenter;
+
 };
 
-export const setupContainer = async (config: any): Promise<AwilixContainer> => {
+export const setupContainer = async (config: Config): Promise<AwilixContainer> => {
   const container = createContainer({
     injectionMode: InjectionMode.PROXY,
   });
 
-  //   const firehoseLogWriter = getFirehoseWriter(config.log.stream);
-  //   const createLoggerInstance = () => getLogger(config.log.level, firehoseLogWriter);
-
   const env = process.env.NODE_ENV; // || ENV.DEVELOPMENT;
 
-  //   const agent = new Agent({ keepAlive: false });
-
   container.register({
+    config: asValue(config),
     logger: asValue(logger),
     env: asValue(env),
     fs: asValue(fs),
@@ -67,6 +91,7 @@ export const setupContainer = async (config: any): Promise<AwilixContainer> => {
     uuidv4: asValue(uuidv4),
     path: asValue(path),
     sequelizeOp: asValue(Op),
+    db: asFunction(getModels),
     getTransaction: asFunction((params) => {
       return (name: string) => {
         try {
@@ -83,36 +108,19 @@ export const setupContainer = async (config: any): Promise<AwilixContainer> => {
   container.loadModules(
     [
       [
-        `${baseDir}/use-cases/**/*[.|-]interactor.js`,
+        `${baseDir}/infra/plugins/singleton/**/*.js`,
         {
-          lifetime: Lifetime.SCOPED,
+          lifetime: Lifetime.SINGLETON,
         },
       ],
-      [
-        `${baseDir}/adapters/**/*[.|-]ptr.js`,
-        {
-          lifetime: Lifetime.SCOPED,
-        },
-      ],
-      [
-        `${baseDir}/adapters/**/*[.|-]ctrl.js`,
-        {
-          lifetime: Lifetime.SCOPED,
-        },
-      ],
-      [
-        `${baseDir}/adapters/**/*[.|-]gateway.js`,
-        {
-          lifetime: Lifetime.SCOPED,
-        },
-      ],
-      [
-        `${baseDir}/infra/plugins/scoped/**/*.js`,
-        {
-          lifetime: Lifetime.SCOPED,
-        },
-      ],
-      `${baseDir}/infra/plugins/singleton/**/*.js`,
+      `${baseDir}/use-cases/**/*.bs.js`,
+      `${baseDir}/adapters/**/*.ctrl.js`,
+      `${baseDir}/adapters/**/*.ptr.js`,
+      `${baseDir}/adapters/**/*.gateway.js`,
+      `${baseDir}/adapters/**/*.rep.js`,
+      `${baseDir}/adapters/**/*.service.js`,
+      `${baseDir}/infra/plugins/scoped/**/*.js`,
+      `${baseDir}/infra/mappers/*.js`,
     ],
     {
       formatName: (name: string) => {
@@ -127,22 +135,10 @@ export const setupContainer = async (config: any): Promise<AwilixContainer> => {
       },
       resolverOptions: {
         register: asClass,
-        lifetime: Lifetime.SINGLETON,
+        lifetime: Lifetime.SCOPED,
       },
     }
   );
-
-  //   container.register({
-  //     requestQueueHandler: asClass(RequestQueueHandler).singleton(),
-  //     jsonValidatorHandler: asClass(JsonValidatorHandler).singleton(),
-  //     redisClient: asValue(redis.createClient(config.databases.redis)),
-  //     redisSubscriber: asValue(redis.createClient(config.databases.redis)),
-  //   });
-
-  //   const jsonValidatorHandler: JsonValidatorHandler = container.resolve(
-  //     "jsonValidatorHandler"
-  //   );
-  //   await jsonValidatorHandler.initialize();
 
   return container;
 };

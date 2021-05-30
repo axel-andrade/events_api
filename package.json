@@ -41,6 +41,7 @@
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "read-pkg-up": "^7.0.1",
     "sequelize": "^5.22.3",
     "underscore": "^1.12.0",
     "uuid": "^8.3.2",

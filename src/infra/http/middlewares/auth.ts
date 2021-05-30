@@ -1,6 +1,6 @@
 import { UserRoleEnum } from "@entities";
 import { InternalServerError, UnauthorizedError } from "@shared/errors";
-import GetUserByAccessTokenInteractor from "@useCases/user/get-user-by-access-token/get-user-by-access-token.interactor";
+import GetUserByAccessTokenBs from "@useCases/user/get-user-by-access-token/get-user-by-access-token.bs";
 import { Request, Response, NextFunction } from "express";
 
 const authMiddleware = (role: UserRoleEnum) => {
@@ -14,29 +14,25 @@ const authMiddleware = (role: UserRoleEnum) => {
       accessToken = req.headers.authorization.replace("Bearer ", "").trim();
 
       const { container } = req;
-      const getUserByAccessTokenInteractor: GetUserByAccessTokenInteractor =
-        container.resolve("getUserByAccessTokenInteractor");
+      const getUserByAccessTokenBs: GetUserByAccessTokenBs = container.resolve(
+        "getUserByAccessTokenBs"
+      );
 
-      const user = await getUserByAccessTokenInteractor.execute({
-        accessToken,
-        role,
-      });
+      const user = await getUserByAccessTokenBs.execute({ accessToken, role });
 
       if (!user) {
         throw new UnauthorizedError();
       }
 
+      req.currentUser = user;
+      
       next();
     } catch (err) {
       if (err instanceof UnauthorizedError) {
-        return res.status(401).json({
-          error: new UnauthorizedError().message,
-        });
+        return res.status(401).json({ error: new UnauthorizedError().message });
       }
 
-      return res.status(500).json({
-        error: new InternalServerError().message,
-      });
+      return res.status(500).json({ error: new InternalServerError().message });
     }
   };
 };
