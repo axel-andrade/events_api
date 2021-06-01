@@ -1,5 +1,6 @@
-import UpdatePasswordBs from "@useCases/user/update-password/update-password.bs";
-import { UpdatePasswordRequestDTO } from "@useCases/user/update-password/update-password.types";
+import { AppContainer } from "@infra/bootstrap/types";
+import UpdatePasswordBs from "@usecases/user/update-password/update-password.bs";
+import { UpdatePasswordRequestDTO } from "@usecases/user/update-password/update-password.types";
 
 type HTTPUpdatePasswordInput = {
   params: any;
@@ -9,7 +10,8 @@ type HTTPUpdatePasswordInput = {
 
 export default class HTTPUpdatePasswordController {
   private readonly _interactor: UpdatePasswordBs;
-  constructor(params: any) {
+  
+  constructor(params: AppContainer) {
     this._interactor = params.updatePasswordBs;
   }
 

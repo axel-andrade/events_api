@@ -1,16 +1,19 @@
+import { ERROR_MESSAGES } from "@constants/error";
 import { User, UserRoleEnum } from "@entities";
-import { InternalServerError } from "@shared/errors";
-import { OutputPort, Signup } from "@useCases/index";
-import { UserAlreadyExistsError } from "../errors/user-already-exists.error";
-import { SignupRequestDTO } from "./signup-request.dto";
+import { AppContainer } from "@infra/bootstrap/types";
+import { ConflictError, InternalServerError } from "@shared/errors";
+import { SignUpGateway, SignUpPresenter, SignUpRequestDTO } from "./sign-up.types";
 
-export class SignupBs {
-  constructor(
-    private _gateway: Signup.SignupGateway,
-    private _presenter: OutputPort<Signup.SignupResponseDTO>
-  ) {}
+export default class SignUpBs {
+  private _gateway: SignUpGateway;
+  private _presenter: SignUpPresenter;
 
-  public async execute(data: SignupRequestDTO) {
+  constructor(params: AppContainer) {
+    this._gateway = params.signUpGateway;
+    this._presenter = params.signUpPresenter;
+  }
+
+  public async execute(data: SignUpRequestDTO) {
     const userEntity = User.build({ ...data, role: UserRoleEnum.USER });
 
     if (!userEntity.succeeded) {
@@ -25,10 +28,9 @@ export class SignupBs {
     );
 
     if (userExistsByEmail) {
-      userEntity.errors.push(new UserAlreadyExistsError("email"));
       return this._presenter.show({
         success: false,
-        failures: userEntity.errors,
+        failures: [new ConflictError(ERROR_MESSAGES.EMAIL_ALREADY_EXISTS)],
       });
     }
 

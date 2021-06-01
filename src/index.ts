@@ -7,6 +7,7 @@ moduleAlias.addAlias("@adapters", __dirname + "/adapters");
 moduleAlias.addAlias("@usecases", __dirname + "/use-cases");
 moduleAlias.addAlias("@entities", __dirname + "/entities");
 moduleAlias.addAlias("@shared", __dirname + "/shared");
+moduleAlias.addAlias("@constants", __dirname + "/constants");
 
 import logger from "@shared/logger";
 import { setupContainer } from "@infra/bootstrap/register";

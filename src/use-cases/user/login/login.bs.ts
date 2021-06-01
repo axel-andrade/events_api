@@ -1,6 +1,6 @@
-import { AppContainer } from "@infra/bootstrap/register";
-import { InternalServerError, NotFoundError } from "@shared/errors";
-import { InvalidPasswordError } from "../errors";
+import { ERROR_MESSAGES } from "@constants/error";
+import { AppContainer } from "@infra/bootstrap/types";
+import { InternalServerError, NotFoundError, ApplicationError} from "@shared/errors";
 import { LoginGateway, LoginPresenter, LoginRequestDTO } from "./login.types";
 
 export default class LoginBs {
@@ -38,13 +38,13 @@ export default class LoginBs {
 
         return this._presenter.show({
           success: false,
-          failures: [new InvalidPasswordError()],
+          failures: [new ApplicationError(ERROR_MESSAGES.INVALID_PASSWORD)],
         });
       }
 
       return this._presenter.show({
         success: false,
-        failures: [new NotFoundError("User")],
+        failures: [new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND)],
       });
     } catch (err) {
       return this._presenter.show({

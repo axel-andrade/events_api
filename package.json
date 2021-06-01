@@ -17,10 +17,10 @@
     "@daos": "dist/daos",
     "@infra": "dist/src/infra",
     "@adapters": "dist/src/adapters",
-    "@useCases": "dist/src/use-cases",
+    "@usecases": "dist/src/use-cases",
     "@entities": "dist/src/entities",
     "@shared": "dist/src/shared",
-    "@server": "dist/src/server"
+    "@constants": "dist/src/constants"
   },
   "dependencies": {
     "@types/cors": "^2.8.10",

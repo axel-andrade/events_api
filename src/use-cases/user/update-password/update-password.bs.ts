@@ -1,5 +1,5 @@
-import { AppContainer } from "@infra/bootstrap/register";
-import { InternalServerError, NotFoundError } from "@shared/errors";
+import { AppContainer } from "@infra/bootstrap/types";
+import { InternalServerError } from "@shared/errors";
 import {
   UpdatePasswordGateway,
   UpdatePasswordPresenter,

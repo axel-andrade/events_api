@@ -4,7 +4,7 @@ import {
   DataMapper,
   TransactionalDataMappers,
 } from "src/adapters/common/mappers";
-import { AppContainer } from "@infra/bootstrap/register";
+import { AppContainer } from "@infra/bootstrap/types";
 
 interface EntityDataMappers {
   [entity: string]: DataMapper;

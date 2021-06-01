@@ -1,6 +1,6 @@
-import { AppContainer } from "@infra/bootstrap/register";
-import LoginBs from "@useCases/user/login/login.bs";
-import { LoginRequestDTO } from "@useCases/user/login/login.types";
+import { AppContainer } from "@infra/bootstrap/types";
+import LoginBs from "@usecases/user/login/login.bs";
+import { LoginRequestDTO } from "@usecases/user/login/login.types";
 
 type HTTPLoginInput = {
   params: any;

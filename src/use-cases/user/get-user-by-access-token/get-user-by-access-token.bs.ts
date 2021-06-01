@@ -1,5 +1,5 @@
 import { User } from "@entities";
-import { AppContainer } from "@infra/bootstrap/register";
+import { AppContainer } from "@infra/bootstrap/types";
 import {
   GetUserByAccessTokenGateway,
   GetUserByAccessTokenRequestDTO,

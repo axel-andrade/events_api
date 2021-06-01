@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "noImplicitAny": true,
     "declaration": false,
     "strict": true,
@@ -17,11 +18,11 @@
     "baseUrl": "./",
     "paths": {
       "@infra/*": ["src/infra/*"],
-      "@adapters": ["src/adapters/index"],
+      "@adapters/*": ["src/adapters/*"],
       "@entities": ["src/entities/index"],
-      "@useCases/*": ["src/use-cases/*"],
+      "@usecases/*": ["src/use-cases/*"],
       "@shared/*": ["src/shared/*"],
-      "@server": ["src/server"]
+      "@constants/*": ["src/constants/*"]
     }
   },
   "compileOnSave": true,

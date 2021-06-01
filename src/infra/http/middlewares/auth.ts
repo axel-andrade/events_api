@@ -1,6 +1,6 @@
 import { UserRoleEnum } from "@entities";
 import { InternalServerError, UnauthorizedError } from "@shared/errors";
-import GetUserByAccessTokenBs from "@useCases/user/get-user-by-access-token/get-user-by-access-token.bs";
+import GetUserByAccessTokenBs from "@usecases/user/get-user-by-access-token/get-user-by-access-token.bs";
 import { Request, Response, NextFunction } from "express";
 
 const authMiddleware = (role: UserRoleEnum) => {

@@ -2,7 +2,7 @@ import { formatHttpResponseError } from "@shared/functions";
 import {
   UpdatePasswordPresenter,
   UpdatePasswordResponseDTO,
-} from "@useCases/user/update-password/update-password.types";
+} from "@usecases/user/update-password/update-password.types";
 
 type UpdatePasswordHTTPView = {
   statusCode: number;
